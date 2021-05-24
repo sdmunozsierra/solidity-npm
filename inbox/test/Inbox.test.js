@@ -20,11 +20,21 @@ describe('Inbox', () => {
   it('deploys a contract', () => {
     assert.ok(inbox.options.address)
   })
+
   it('has a default message', async () => {
     const message = await inbox.methods.message().call()
     assert.equal(message, 'initialMessage')
   })
-  it('has a default message', async () => {
+
+  it('can change a message', async () => {
+    // send change
+    await inbox.methods.setMessage('newMessage').send({ from: accounts[0] })
+    // get change
+    const message = await inbox.methods.message().call()
+    assert.equal(message, 'newMessage')
+  })
+
+  it('has a values', async () => {
     console.log(accounts)
     console.log(inbox)
   })
