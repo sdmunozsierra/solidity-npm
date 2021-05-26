@@ -1,6 +1,7 @@
 import Web3 from 'web3'
 import Notify from 'bnc-notify'
 import ERC721Abi from '~/assets/data/ethereum/ERC721Abi.json'
+import lotteryAbi from '~/assets/data/ethereum/lotteryAbi.json'
 import { BLOCKNATIVE } from '~/assets/data/non_secret_keys.js'
 
 export default class EthereumService {
@@ -134,6 +135,10 @@ export default class EthereumService {
 
   getERC721Contract(address) {
     return new this.web3.eth.Contract(ERC721Abi, address)
+  }
+
+  getLotteryContract(address) {
+    return new this.web3.eth.Contract(lotteryAbi, address)
   }
 
   async getGasPriceInGwei() {

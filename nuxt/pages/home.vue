@@ -6,21 +6,28 @@
     <h1>{{ ownAddress }}</h1>
     <h1>{{ networkId }}</h1>
     <v-btn @click="enableWallet">Enable Account</v-btn>
+
+    <h1>Get manager from contract: {{ manager }}</h1>
+    <v-btn @click="getManager">Get Manager</v-btn>
+
+    <h1>Contract: {{ contract }}</h1>
+    <v-btn @click="deployContract">Deploy Contract</v-btn>
   </section>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      account: '',
+      manager: '',
     }
   },
   computed: {
     ...mapState({
       ownAddress: (state) => state.eth.ownAddress,
       networkId: (state) => state.eth.networkId,
+      contract: (state) => state.lottery.contract,
     }),
   },
 
@@ -55,6 +62,20 @@ export default {
     async enableWallet() {
       await this.$ethereumService.unlockWallet()
       this.loadAccount()
+    },
+
+    ...mapMutations({
+      deployContract: 'lottery/deployContract',
+    }),
+
+    // setContract() {
+    //   this.$store.commit('lottery/setContract', this.contract)
+    // },
+
+    async getManager() {
+      const manager = await this.contract.methods.manager().call()
+      this.manager = manager
+      return manager
     },
   },
 }
