@@ -75,6 +75,7 @@ export default {
     async getManager() {
       const manager = await this.contract.methods.manager().call()
       this.manager = manager
+      this.$store.commit('lottery/setManager', this.manager)
       return manager
     },
   },

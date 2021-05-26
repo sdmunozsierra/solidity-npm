@@ -1,6 +1,7 @@
 export const state = () => ({
   address: '0x082adF44cE9a0DE332938c84228D14Ae0e1dd5aA',
   contract: null, // lottery contract
+  manager: null,
 })
 
 export const getters = {
@@ -9,6 +10,9 @@ export const getters = {
   },
   contract(state) {
     return state.contract
+  },
+  manager(state) {
+    return state.manager
   },
 }
 
@@ -21,7 +25,9 @@ export const mutations = {
   },
   deployContract(state) {
     state.contract = this.$ethereumService.getLotteryContract(state.address)
-    return state.contract
+  },
+  setManager(state, manager) {
+    state.manager = manager
   },
 }
 
