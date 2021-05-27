@@ -1,93 +1,85 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation </a
-            >.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord </a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <section>
+    <h1>hi there</h1>
+    <h1>User has wallet?</h1>
+    <h1>{{ hasWallet() }}</h1>
+    <h1>{{ ownAddress }}</h1>
+    <h1>{{ networkId }}</h1>
+    <v-btn @click="enableWallet">Enable Account</v-btn>
+
+    <h1>Get manager from contract: {{ manager }}</h1>
+    <v-btn @click="getManager">Get Manager</v-btn>
+
+    <h1>Contract: {{ contract }}</h1>
+    <v-btn @click="deployContract">Deploy Contract</v-btn>
+  </section>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
+import { mapState, mapMutations } from 'vuex'
 export default {
-  components: {
-    Logo,
-    VuetifyLogo,
+  data() {
+    return {
+      manager: '',
+    }
+  },
+  computed: {
+    ...mapState({
+      ownAddress: (state) => state.eth.ownAddress,
+      networkId: (state) => state.eth.networkId,
+      contract: (state) => state.lottery.contract,
+    }),
+  },
+
+  methods: {
+    async beforeMount() {
+      await this.loadAccount()
+    },
+    hasWallet() {
+      return this.$ethereumService.hasWallet
+    },
+    isMainnet() {
+      return this.networkId === 1
+    },
+    isRinkeby() {
+      return this.networkId === 4
+    },
+    isUnsupportedNet() {
+      return !(this.isMainnet || this.isRinkeby)
+    },
+    handleAccountBtnClick() {
+      if (this.account.length) {
+        window.alert('send to profile')
+      }
+      return this.enableWallet()
+    },
+    sendToMetamask() {
+      return window.open('https://metamask.io/')
+    },
+    async loadAccount() {
+      this.account = await this.$ethereumService.getCurrentAccountAsync()
+    },
+    async enableWallet() {
+      await this.$ethereumService.unlockWallet()
+      this.loadAccount()
+    },
+
+    ...mapMutations({
+      deployContract: 'lottery/deployContract',
+    }),
+
+    // setContract() {
+    //   this.$store.commit('lottery/setContract', this.contract)
+    // },
+
+    async getManager() {
+      const manager = await this.contract.methods.manager().call()
+      this.manager = manager
+      this.$store.commit('lottery/setManager', this.manager)
+      return manager
+    },
   },
 }
 </script>
+
+<style lang="scss" scoped></style>

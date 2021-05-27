@@ -2,6 +2,8 @@ export const state = () => ({
   address: '0x082adF44cE9a0DE332938c84228D14Ae0e1dd5aA',
   contract: null, // lottery contract
   manager: null,
+  players: null,
+  balance: null,
 })
 
 export const getters = {
@@ -13,6 +15,12 @@ export const getters = {
   },
   manager(state) {
     return state.manager
+  },
+  players(state) {
+    return state.players
+  },
+  balance(state) {
+    return state.balance
   },
 }
 
@@ -28,6 +36,12 @@ export const mutations = {
   },
   setManager(state, manager) {
     state.manager = manager
+  },
+  setPlayers(state, players) {
+    state.players = players
+  },
+  setBalance(state, balance) {
+    state.balance = balance
   },
 }
 
