@@ -1,11 +1,12 @@
 <template>
   <section>
-    <h1>hi there</h1>
-    <h1>User has wallet?</h1>
-    <h1>{{ hasWallet() }}</h1>
-    <h1>{{ ownAddress }}</h1>
-    <h1>{{ networkId }}</h1>
-    <v-btn @click="enableWallet">Enable Account</v-btn>
+    <h1>Metamask statuses</h1>
+    <h1>Has wallet: {{ hasWallet() }}</h1>
+    <h1>Has ownaddress: {{ ownAddress }}</h1>
+    <h1>Has networkid: {{ networkId }}</h1>
+
+    <h1>Enable metamask wallet {{ account }}</h1>
+    <v-btn @click="handleAccountBtnClick">Enable Account</v-btn>
 
     <h1>Get manager from contract: {{ manager }}</h1>
     <v-btn @click="getManager">Get Manager</v-btn>
@@ -19,19 +20,28 @@
 import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
-    return {
-      manager: '',
-    }
+    return { account: '' }
   },
   computed: {
     ...mapState({
       ownAddress: (state) => state.eth.ownAddress,
       networkId: (state) => state.eth.networkId,
       contract: (state) => state.lottery.contract,
+      manager: (state) => state.lottery.manager,
     }),
   },
-
   methods: {
+    ...mapMutations({
+      deployContract: 'lottery/deployContract',
+      setManager: 'lottery/setManager',
+    }),
+
+    async getManager() {
+      const manager = await this.contract.methods.manager().call()
+      this.setManager(manager)
+      return manager
+    },
+
     async beforeMount() {
       await this.loadAccount()
     },
@@ -62,21 +72,6 @@ export default {
     async enableWallet() {
       await this.$ethereumService.unlockWallet()
       this.loadAccount()
-    },
-
-    ...mapMutations({
-      deployContract: 'lottery/deployContract',
-    }),
-
-    // setContract() {
-    //   this.$store.commit('lottery/setContract', this.contract)
-    // },
-
-    async getManager() {
-      const manager = await this.contract.methods.manager().call()
-      this.manager = manager
-      this.$store.commit('lottery/setManager', this.manager)
-      return manager
     },
   },
 }

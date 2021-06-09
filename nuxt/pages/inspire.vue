@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {}
@@ -56,17 +56,24 @@ export default {
     }),
   },
   methods: {
+    ...mapMutations({
+      setPlayers: 'lottery/setPlayers',
+      setBalance: 'lottery/setBalance',
+    }),
+
     async getPlayers() {
       const players = await this.contract.methods.getPlayers().call()
-      this.$store.commit('lottery/setPlayers', players)
-      this.players = players
+      // this.$store.commit('lottery/setPlayers', players)
+      this.setPlayers(players)
+      // this.players = players
     },
     async getBalance() {
       const balance = await this.$ethereumService.eth.getBalance(
         this.contract.options.address
       )
-      this.$store.commit('lottery/setBalance', balance)
-      this.balance = balance
+      this.setBalance(balance)
+      // this.$store.commit('lottery/setBalance', balance)
+      // this.balance = balance
     },
   },
 }
