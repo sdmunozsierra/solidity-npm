@@ -5,8 +5,14 @@
         <v-card min-height="150" class="mx-auto">
           <v-card-text>
             <p class="text-h4">Ethereum Lottery</p>
-            <p>Total Prize: {{ balance }} eth</p>
-
+            <div v-if="balance === 0">Total Prize: 0 Ethereum</div>
+            <div v-else>
+              <p>
+                Total Prize:
+                {{ this.$ethereumService.utils.fromWei(balance, 'ether') }}
+                Ethereum
+              </p>
+            </div>
             <!-- <div v-if="players.length"> -->
             <div>
               <p>Players: {{ players }}</p>
@@ -25,9 +31,9 @@
           <v-card-text>
             <h2>Try your luck</h2>
             <p>Amount of ether to enter</p>
-            <input v-model="message" placeholder="Min ammount of 0.1 eth" />
-            <p>Amount to be sent: {{ message }}</p>
-            <v-btn @click="localSetValue(message)">Enter Lottery</v-btn>
+            <input v-model="localValue" placeholder="Min ammount of 0.1 eth" />
+            <p>Amount to be sent: {{ localValue }}</p>
+            <v-btn @click="enterLottery">Enter Lottery</v-btn>
             <h2>{{ transactionMessage }}</h2>
           </v-card-text>
         </v-card>
@@ -52,7 +58,7 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      message: this.message,
+      localValue: 0.0,
       transactionMessage: '',
     }
   },
@@ -83,30 +89,24 @@ export default {
     },
 
     async getBalance() {
-      // eth.getbalance returns an object must convert to Wei
+      // eth.getbalance returns an object must convert from Wei
       const balance = await this.$ethereumService.eth.getBalance(
         this.contract.options.address
       )
-
-      // eth.getbalance returns an object must convert to Wei
-      // {{ this.$ethereumService.utils.fromWei(balance, 'ether') }}</span
-
       // Update store
       this.setBalance(balance)
     },
 
     async enterLottery() {
+      this.setValue(this.localValue)
       this.transactionMessage = 'waiting on transaction success.. '
-      await this.contract.methos.enter().send({
+      await this.contract.methods.enter().send({
         from: this.ownAddress,
         value: this.$ethereumService.utils.toWei(this.value, 'ether'),
       })
       this.transactionMessage = 'You have entered the lottery!'
-    },
-
-    localSetValue(value) {
-      this.setValue(value)
-      this.value = value
+      this.getPlayers()
+      this.getBalance()
     },
   },
 }

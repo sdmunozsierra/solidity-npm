@@ -3,8 +3,8 @@ export const state = () => ({
   contract: null, // lottery contract
   manager: null,
   players: null,
-  balance: null,
-  value: null,
+  balance: 0.0,
+  value: 0.0,
 })
 
 export const getters = {
