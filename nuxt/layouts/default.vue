@@ -57,7 +57,13 @@
       </v-list>
     </v-navigation-drawer>
     <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <NuxtLink color="text--accent" to="www.linkedin.com/in/sdmunozsierra">
+        <span>@sdmunozsierra</span>
+      </NuxtLink>
+      <v-spacer></v-spacer>
+      <NuxtLink class="text--primary" to="www.cleta.io">
+        <span> &copy;Cleta LLC {{ new Date().getFullYear() }} </span>
+      </NuxtLink>
     </v-footer>
   </v-app>
 </template>

@@ -29,20 +29,15 @@
         </v-col>
 
         <v-col cols="4">
-          <v-card min-height="275" class="mx-auto">
-            <v-card-text>
-              <p class="text-h4">1. Enable Metamask wallet</p>
-              <div v-if="!ownAddress.length">Your account will appear here</div>
-              <div v-else>
-                <p>{{ ownAddress }}</p>
-              </div>
-            </v-card-text>
-            <v-card-actions class="justify-center">
-              <v-btn color="teal accent-4" @click="handleAccountBtnClick"
-                >Enable Account</v-btn
-              >
-            </v-card-actions>
-          </v-card>
+          <MyCard
+            title1="1. Enable Metamask wallet"
+            title2="1. Metamask wallet enabled"
+            content1="Your account will appear here"
+            :content2="ownAddress"
+            button1="Enable Account"
+            :disable-return="true"
+            :button-action1="handleAccountBtnClick"
+          ></MyCard>
         </v-col>
 
         <v-col cols="4">
@@ -61,20 +56,15 @@
         </v-col>
 
         <v-col cols="4">
-          <v-card min-height="275" class="mx-auto">
-            <v-card-text>
-              <p class="text-h4">3. Get manager from contract</p>
-              <div v-if="manager == null">
-                Contract Manager will appear here
-              </div>
-              <p>{{ manager }}</p>
-            </v-card-text>
-            <v-card-actions class="justify-center">
-              <v-btn color="teal accent-4" @click="getManager"
-                >Get Manager</v-btn
-              >
-            </v-card-actions>
-          </v-card>
+          <MyCard
+            title1="3. Get Contract Manager"
+            title2="3. Manager Obtained"
+            content1="Your Contract Manager will appear here"
+            :content2="manager"
+            button1="Get Manager"
+            :disable-return="true"
+            :button-action1="getManager"
+          ></MyCard>
         </v-col>
       </v-row>
     </v-container>
