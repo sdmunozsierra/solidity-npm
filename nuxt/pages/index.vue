@@ -87,7 +87,7 @@
 import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
-    return { account: '' }
+    return {}
   },
   computed: {
     ...mapState({
@@ -99,6 +99,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setOwnAddress: 'eth/setOwnAddress',
       deployContract: 'lottery/deployContract',
       setManager: 'lottery/setManager',
     }),
@@ -125,16 +126,22 @@ export default {
       return !(this.isMainnet || this.isRinkeby)
     },
     handleAccountBtnClick() {
-      if (this.account.length) {
-        window.alert('send to profile')
+      if (this.ownAddress.length > 0) {
+        window.alert('Already enabled. Go to lottery')
+        // this.sendToLottery() // Do not redirect use nuxt instead
+        return
       }
       return this.enableWallet()
     },
     sendToMetamask() {
       return window.open('https://metamask.io/')
     },
+    sendToLottery() {
+      return window.location.replace('/lottery')
+    },
     async loadAccount() {
-      this.account = await this.$ethereumService.getCurrentAccountAsync()
+      const address = await this.$ethereumService.getCurrentAccountAsync()
+      this.setOwnAddress(address)
     },
     async enableWallet() {
       await this.$ethereumService.unlockWallet()

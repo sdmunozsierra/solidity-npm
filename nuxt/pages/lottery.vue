@@ -92,7 +92,6 @@ export default {
   computed: {
     ...mapState({
       ownAddress: (state) => state.eth.ownAddress,
-      networkId: (state) => state.eth.networkId,
       contract: (state) => state.lottery.contract,
       manager: (state) => state.lottery.manager,
       players: (state) => state.lottery.players,
@@ -139,16 +138,15 @@ export default {
     async pickWinner() {
       this.pickWinnerMessage =
         'Picking Winner... Waiting on transaction success.. '
-      await this.contract.methods
-        .pickWinner()
-        .send({
-          from: this.ownAddress,
-        })
-        .then(console.log)
+      await this.contract.methods.pickWinner().send({
+        from: this.ownAddress,
+      })
       // TODO get winner
       // const winner = await this.contract.methods.lastWinner().call()
       // this.lastWinner = winner
       this.pickWinnerMessage = 'You have picked a lottery winner!'
+      this.getPlayers()
+      this.getBalance()
     },
   },
 }
