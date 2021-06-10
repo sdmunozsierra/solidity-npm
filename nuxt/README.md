@@ -20,5 +20,5 @@ $ npm run generate
 ### Installed Dependencies
 
 ```bash
-npm install web3@1.3.5
+$ npm install web3@1.3.5
 ```

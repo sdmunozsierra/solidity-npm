@@ -26,27 +26,51 @@
       </v-col>
 
       <!-- Input User Button -->
-      <v-col cols="6" class="text-center">
+      <v-col cols="4" class="text-center">
         <v-card min-height="215">
           <v-card-text>
-            <h2>Try your luck</h2>
+            <p class="text-h4">Try Your Luck</p>
             <p>Amount of ether to enter</p>
             <input v-model="localValue" placeholder="Min ammount of 0.1 eth" />
             <p>Amount to be sent: {{ localValue }}</p>
-            <v-btn @click="enterLottery">Enter Lottery</v-btn>
             <h2>{{ transactionMessage }}</h2>
           </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn @click="enterLottery">Enter Lottery</v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
 
       <!-- Refresh Data Buttons -->
-      <v-col cols="6" class="text-center">
+      <v-col cols="4" class="text-center">
         <v-card min-height="215">
           <v-card-text>
-            <h3>Refresh Lottery Data</h3>
-            <v-btn @click="getPlayers">Refresh Players</v-btn>
-            <v-btn @click="getBalance">Refresh Balance</v-btn>
+            <p class="text-h4">Refresh Lottery Data</p>
           </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-row>
+              <v-col cols="12">
+                <v-btn @click="getPlayers">Refresh Players</v-btn>
+              </v-col>
+              <v-col cols="12">
+                <v-btn @click="getBalance">Refresh Balance</v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <!-- Pick Winner -->
+      <v-col cols="4" class="text-center">
+        <v-card min-height="215">
+          <v-card-text>
+            <p class="text-h4">Pick A Winner</p>
+            <p>{{ pickWinnerMessage }}</p>
+            <p>{{ lastWinner }}</p>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn @click="pickWinner">pickWinner</v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -60,6 +84,8 @@ export default {
     return {
       localValue: 0.0,
       transactionMessage: '',
+      pickWinnerMessage: '',
+      lastWinner: '',
     }
   },
 
@@ -99,7 +125,8 @@ export default {
 
     async enterLottery() {
       this.setValue(this.localValue)
-      this.transactionMessage = 'waiting on transaction success.. '
+      this.transactionMessage =
+        'Entering Lottery... Waiting on transaction success.. '
       await this.contract.methods.enter().send({
         from: this.ownAddress,
         value: this.$ethereumService.utils.toWei(this.value, 'ether'),
@@ -107,6 +134,21 @@ export default {
       this.transactionMessage = 'You have entered the lottery!'
       this.getPlayers()
       this.getBalance()
+    },
+
+    async pickWinner() {
+      this.pickWinnerMessage =
+        'Picking Winner... Waiting on transaction success.. '
+      await this.contract.methods
+        .pickWinner()
+        .send({
+          from: this.ownAddress,
+        })
+        .then(console.log)
+      // TODO get winner
+      // const winner = await this.contract.methods.lastWinner().call()
+      // this.lastWinner = winner
+      this.pickWinnerMessage = 'You have picked a lottery winner!'
     },
   },
 }
