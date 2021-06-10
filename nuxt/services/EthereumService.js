@@ -133,12 +133,12 @@ export default class EthereumService {
     return this.web3.eth.net.getId()
   }
 
-  getERC721Contract(address) {
-    return new this.web3.eth.Contract(ERC721Abi, address)
-  }
-
   getLotteryContract(address) {
     return new this.web3.eth.Contract(lotteryAbi, address)
+  }
+
+  getERC721Contract(address) {
+    return new this.web3.eth.Contract(ERC721Abi, address)
   }
 
   async getGasPriceInGwei() {
@@ -163,6 +163,28 @@ export default class EthereumService {
         return ''
     }
   }
+
+  // async enterLottery(
+  //   contractAddress,
+  //   from,
+  //   value,
+  //   callbackAfterSend = () => {}
+  // ){
+  //   const contract = await this.getLotteryContract(contractAddress)
+  //   return contract.methods
+  //     .enter()
+  //     .send({
+  //        from,
+  //        value: this.web3.utils.toWei(value, 'ether')
+  //       })
+  //     .on('transactionHash', function (hash) {
+  //       notify.hash(hash)
+  //       callbackAfterSend()
+  //     })
+  //     .on('receipt', function (receipt) {
+  //       console.info(receipt)
+  //     })
+  // },
 
   // most standard ERC721 method implemented:
   async sendAsset(

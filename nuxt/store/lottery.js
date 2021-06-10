@@ -4,6 +4,7 @@ export const state = () => ({
   manager: null,
   players: null,
   balance: null,
+  value: null,
 })
 
 export const getters = {
@@ -21,6 +22,9 @@ export const getters = {
   },
   balance(state) {
     return state.balance
+  },
+  value(state) {
+    return state.value
   },
 }
 
@@ -42,6 +46,9 @@ export const mutations = {
   },
   setBalance(state, balance) {
     state.balance = balance
+  },
+  setValue(state, value) {
+    state.value = value
   },
 }
 
