@@ -1,38 +1,46 @@
 <template>
   <v-container>
-    <v-row no-gutters>
-      <v-col cols="12" class="text-center">
-        <h1>ETHEREUM LOTTERY</h1>
-      </v-col>
+    <v-row class="text-center">
+      <v-col cols="12">
+        <v-card min-height="150" class="mx-auto">
+          <v-card-text>
+            <p class="text-h4">Ethereum Lottery</p>
+            <p>Total Prize: {{ balance }} eth</p>
 
-      <!-- Stats -->
-      <v-col cols="5" class="text-center">
-        <v-card min-width="350">
-          <h2>LOTTERY STATS</h2>
-          <p>Manager: {{ manager }}</p>
-          <p>Total Balance: {{ balance }}</p>
-          <p>Players:</p>
+            <!-- <div v-if="players.length"> -->
+            <div>
+              <p>Players: {{ players }}</p>
+            </div>
+
+            <div v-if="manager != null">
+              <p>Contract Manager: {{ manager }}</p>
+            </div>
+          </v-card-text>
         </v-card>
       </v-col>
 
       <!-- Input User Button -->
-      <v-col cols="7" class="px-4 text-center">
-        <v-card min-width="350">
-          <h2>Try your luck</h2>
-          <p>Amount of ether to enter</p>
-          <input v-model="message" placeholder="Enter amount of ether" />
-          <p>Amount selected: {{ message }}</p>
-          <v-btn @click="localSetValue(message)">Submit Eth</v-btn>
-          <h2>{{ transactionMessage }}</h2>
+      <v-col cols="6" class="text-center">
+        <v-card min-height="215">
+          <v-card-text>
+            <h2>Try your luck</h2>
+            <p>Amount of ether to enter</p>
+            <input v-model="message" placeholder="Min ammount of 0.1 eth" />
+            <p>Amount to be sent: {{ message }}</p>
+            <v-btn @click="localSetValue(message)">Enter Lottery</v-btn>
+            <h2>{{ transactionMessage }}</h2>
+          </v-card-text>
         </v-card>
       </v-col>
 
-      <v-col cols="5" class="text-center">
-        <!-- Refresh Data Buttons -->
-        <v-card min-width="350" min-height="100">
-          <h3>Refresh Lottery Data</h3>
-          <v-btn @click="getPlayers">Refresh Players</v-btn>
-          <v-btn @click="getBalance">Refresh Balance</v-btn>
+      <!-- Refresh Data Buttons -->
+      <v-col cols="6" class="text-center">
+        <v-card min-height="215">
+          <v-card-text>
+            <h3>Refresh Lottery Data</h3>
+            <v-btn @click="getPlayers">Refresh Players</v-btn>
+            <v-btn @click="getBalance">Refresh Balance</v-btn>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>

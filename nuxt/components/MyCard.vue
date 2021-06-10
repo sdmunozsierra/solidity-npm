@@ -43,7 +43,7 @@ export default {
     content1: { type: String, default: 'content1' },
     button1: { type: String, default: 'reveal' },
     title2: { type: String, default: 'title2' },
-    content2: { type: String, default: 'content2' },
+    content2: { type: Array, default: null },
     button2: { type: String, default: 'close' },
     disableReturn: { type: Boolean, default: false },
     // eslint-disable-next-line vue/require-default-prop
