@@ -33,7 +33,7 @@ export default {
   },
 
   i18n: {
-    locales: ['en', 'ja'],
+    locales: ['en', 'es', 'ja'],
     defaultLocale: 'en',
     vueI18nLoader: true,
     parsePages: false,

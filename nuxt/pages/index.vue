@@ -1,18 +1,83 @@
 <template>
   <section>
-    <h1>Metamask statuses</h1>
-    <h1>Has wallet: {{ hasWallet() }}</h1>
-    <h1>Has ownaddress: {{ ownAddress }}</h1>
-    <h1>Has networkid: {{ networkId }}</h1>
+    <v-container>
+      <v-row class="text-center" justify="center">
+        <v-col cols="12">
+          <v-card min-height="150" class="mx-auto">
+            <v-card-text>
+              <p class="text-h4">Metamask Status</p>
+              <div v-if="hasWallet() === true">
+                <div v-if="!ownAddress.length">
+                  Connect your Metamask Wallet using the steps below.
+                </div>
+                <div v-else>
+                  <h2>Address Account: {{ ownAddress }}</h2>
+                  <h2>networkid: {{ networkId }}</h2>
+                </div>
+              </div>
+              <div v-else>
+                Please download the Free Metamask Extension to use this service.
+              </div>
+              <div v-if="contract != null">
+                <h2>Contract Deployed!</h2>
+              </div>
+              <div v-if="manager != null">
+                <h2>Contract Manager: {{ manager }}</h2>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-col>
 
-    <h1>Enable metamask wallet {{ account }}</h1>
-    <v-btn @click="handleAccountBtnClick">Enable Account</v-btn>
+        <v-col cols="4">
+          <v-card min-height="275" class="mx-auto">
+            <v-card-text>
+              <p class="text-h4">1. Enable Metamask wallet</p>
+              <div v-if="!ownAddress.length">Your account will appear here</div>
+              <div v-else>
+                <p>{{ ownAddress }}</p>
+              </div>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn color="teal accent-4" @click="handleAccountBtnClick"
+                >Enable Account</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-col>
 
-    <h1>Get manager from contract: {{ manager }}</h1>
-    <v-btn @click="getManager">Get Manager</v-btn>
+        <v-col cols="4">
+          <v-card min-height="275" class="mx-auto">
+            <v-card-text>
+              <p class="text-h4">2. Deploy Contract</p>
+              <div v-if="contract == null">Contract will appear here</div>
+              <p>{{ contract }}</p>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn color="teal accent-4" @click="deployContract">
+                Deploy Contract</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-col>
 
-    <h1>Contract: {{ contract }}</h1>
-    <v-btn @click="deployContract">Deploy Contract</v-btn>
+        <v-col cols="4">
+          <v-card min-height="275" class="mx-auto">
+            <v-card-text>
+              <p class="text-h4">3. Get manager from contract</p>
+              <div v-if="manager == null">
+                Contract Manager will appear here
+              </div>
+              <p>{{ manager }}</p>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn color="teal accent-4" @click="getManager"
+                >Get Manager</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </section>
 </template>
 
