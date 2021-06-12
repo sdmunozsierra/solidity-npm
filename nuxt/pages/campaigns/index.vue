@@ -12,6 +12,7 @@
         </v-card>
       </v-col>
 
+      <!-- Deployed campaigns -->
       <v-col cols="6">
         <v-card min-height="150" class="mx-auto">
           <v-card-text>
@@ -31,9 +32,13 @@
         </v-card>
       </v-col>
 
-      <v-col cols="6">
-        <MyContracts title="Deployed Campaigns"></MyContracts>
+      <MyContracts
+        title="Deployed Campaigns"
+        :address="campaigns"
+      ></MyContracts>
 
+      <!-- Deployed campaigns -->
+      <v-col cols="6">
         <v-card min-height="150" class="mx-auto">
           <v-card-text>
             <p class="text-h4">Contract</p>
