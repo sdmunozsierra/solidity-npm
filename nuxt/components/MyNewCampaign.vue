@@ -31,12 +31,12 @@ export default {
   props: {
     title: { type: String, default: 'Form Title' },
     label: { type: String, default: 'Amount' },
+    currency: { type: String, default: 'wei' },
     minimumContribution: { type: Number, default: 100 },
     buttonText: { type: String, default: 'Button Text' },
     buttonCallback: { type: Function, required: true },
   },
   data: () => ({
-    currency: 'wei',
     valid: false,
     amount: '',
     nameRules: [

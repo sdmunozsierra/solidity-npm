@@ -28,10 +28,30 @@
       </v-col>
 
       <!-- New Campaign -->
-      <MyNewCampaign
-        :amount.sync="amount"
-        :button-callback="createCampaign"
-      ></MyNewCampaign>
+      <v-col cols="6" no-gutters class="pa-0 ma-0">
+        <MyNewCampaign
+          title="Create a new Campaign"
+          label="Contribution Ammount"
+          currecy="wei"
+          :minimum-contribution="100"
+          button-text="Create"
+          :button-callback="createCampaign"
+          :amount.sync="amount"
+        >
+        </MyNewCampaign>
+
+        <div v-if="error">
+          <v-alert
+            dismissible
+            border="right"
+            colored-border
+            type="error"
+            elevation="2"
+          >
+            {{ error.message }}
+          </v-alert>
+        </div>
+      </v-col>
 
       <MyContracts
         title="Deployed Campaigns"
@@ -61,6 +81,7 @@ export default {
   data() {
     return {
       message: '',
+      error: '',
       amount: 0,
     }
   },
@@ -76,7 +97,6 @@ export default {
   methods: {
     ...mapMutations({
       setDeployedContract: 'campaign/setDeployedContract',
-      //       contribute: 'campaign/contribute',
     }),
     ...mapActions({
       setDeployedCampaigns: 'campaign/setDeployedCampaigns',
@@ -85,9 +105,13 @@ export default {
 
     async createCampaign() {
       this.message = 'Creating a new campaign takes about 30 secs. Be patient.'
-      await this.contract.methods
-        .createCampaign(this.amount)
-        .send({ from: this.ownAddress, gas: 1000000 })
+      try {
+        await this.contract.methods
+          .createCampaign(this.amount)
+          .send({ from: this.ownAddress, gas: 1000000 })
+      } catch (err) {
+        this.error = err
+      }
       this.message = 'Campaign created'
       console.info('new campaign created')
       this.setDeployedCampaigns()

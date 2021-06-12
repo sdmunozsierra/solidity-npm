@@ -44,8 +44,6 @@ export const actions = {
       .createCampaign(state.amount)
       .send({ from })
     console.log(campaign)
-    // state.campaigns.push(campaign)
-    // commit('setCampaigns', state.campaigns)
   },
 
   nuxtServerInit() {},
