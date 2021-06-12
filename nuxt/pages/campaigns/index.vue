@@ -11,6 +11,21 @@
           </v-card-text>
         </v-card>
       </v-col>
+
+      <v-col cols="6">
+        <v-card min-height="150" class="mx-auto">
+          <v-card-text>
+            <p class="text-h4">Deployed Campaigns</p>
+            <p>{{ campaigns }}</p>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn color="teal" @click="setDeployedCampaigns"
+              >Get Campaigns</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
       <v-col cols="6">
         <v-card min-height="150" class="mx-auto">
           <v-card-text>
@@ -18,7 +33,9 @@
             <p>{{ contract }}</p>
           </v-card-text>
           <v-card-actions class="justify-center">
-            <v-btn @click="setDeployedContract">Deploy Contract</v-btn>
+            <v-btn color="teal" @click="setDeployedContract"
+              >Deploy Contract</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-col>
@@ -39,13 +56,14 @@ export default {
     ...mapState({
       ownAddress: (state) => state.eth.ownAddress,
       contract: (state) => state.campaign.contract,
-      //       manager: (state) => state.lottery.manager,
+      campaigns: (state) => state.campaign.campaigns,
     }),
   },
 
   methods: {
     ...mapMutations({
       setDeployedContract: 'campaign/setDeployedContract',
+      setDeployedCampaigns: 'campaign/setDeployedCampaigns',
     }),
   },
 }

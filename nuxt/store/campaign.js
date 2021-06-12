@@ -1,6 +1,7 @@
 export const state = () => ({
   address: '0xCfA437255f32F79Fe73E398422EeC91F5fadDA1E',
   contract: null,
+  campaigns: [],
 })
 
 export const getters = {
@@ -10,6 +11,9 @@ export const getters = {
   contract(state) {
     return state.contract
   },
+  campaigns(state) {
+    return state.campaigns
+  },
 }
 
 export const mutations = {
@@ -18,6 +22,9 @@ export const mutations = {
   },
   setDeployedContract(state) {
     state.contract = this.$ethereumService.getFactoryContract(state.address)
+  },
+  async setDeployedCampaigns(state) {
+    state.campaigns = await state.contract.methods.getDeployedCampaigns().call()
   },
 }
 
