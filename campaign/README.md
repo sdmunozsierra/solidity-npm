@@ -24,6 +24,7 @@ To create, compile and test from scratch in a terminal:
 npm init
 npm install web3@1.3.5
 npm install solc@0.17
+npm install mocha
 cd contracts
 node compile.js
 ```

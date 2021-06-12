@@ -52,8 +52,6 @@ contract Campaign {
     }
 
     function createRequest(string description,uint  value, address recipient) public restricted {
-        // Use mapping to determine if the sender is approved
-        require(approvers[msg.sender]);
         // Create a struct and add it to the request array
         Request memory newRequest = Request({
             description: description,
