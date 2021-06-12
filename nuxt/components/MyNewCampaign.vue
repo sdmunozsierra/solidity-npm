@@ -1,24 +1,26 @@
 <template>
-  <v-form v-model="valid">
+  <v-form ref="form" v-model="valid" @submit.prevent="submit">
     <v-container>
       <v-row>
-        <v-col cols="12" md="4">
-          <v-text-field
-            v-model="firstname"
-            :rules="numberRules"
-            label="Campaign Contribution"
-            required
-          ></v-text-field>
+        <v-col cols="12">
+          <v-card class="mx-auto">
+            <v-card-text>
+              <p class="text-h4">{{ title }}</p>
+              <v-text-field
+                v-model="amount"
+                :rules="numberRules"
+                :label="label"
+                required
+                suffix="wei"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn :disabled="!formIsValid" color="primary" @click="submit">{{
+                buttonText
+              }}</v-btn>
+            </v-card-actions>
+          </v-card>
         </v-col>
-
-        <!-- <v-col cols="12" md="4">
-          <v-text-field
-            v-model="lastname"
-            :rules="nameRules"
-            :counter="10"
-            label="Last name"
-          ></v-text-field>
-        </v-col> -->
       </v-row>
     </v-container>
   </v-form>
@@ -27,13 +29,16 @@
 <script>
 export default {
   props: {
+    title: { type: String, default: 'Form Title' },
+    label: { type: String, default: 'Amount' },
     minimumContribution: { type: Number, default: 0.1 },
+    buttonText: { type: String, default: 'Button Text' },
+    buttonCallback: { type: Function, required: true },
   },
   data: () => ({
     currency: 'Ethereum',
     valid: false,
-    firstname: '',
-    lastname: '',
+    amount: '',
     nameRules: [
       (v) => !!v || 'Name is required',
       (v) => v.length <= 10 || 'Name must be less than 10 characters',
@@ -49,5 +54,18 @@ export default {
       (v) => /.+@.+/.test(v) || 'E-mail must be valid',
     ],
   }),
+
+  computed: {
+    formIsValid() {
+      return this.valid
+    },
+  },
+
+  methods: {
+    submit() {
+      this.$emit('update:amount', this.amount)
+      this.buttonCallback()
+    },
+  },
 }
 </script>

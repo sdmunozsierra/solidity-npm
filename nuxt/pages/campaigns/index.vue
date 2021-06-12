@@ -28,17 +28,10 @@
       </v-col>
 
       <!-- New Campaign -->
-      <v-col cols="6">
-        <v-card min-height="150" class="mx-auto">
-          <v-card-text>
-            <p class="text-h4">Create New Campaign</p>
-            <MyNewCampaign class="px-6"></MyNewCampaign>
-          </v-card-text>
-          <v-card-actions class="justify-center">
-            <!-- <v-btn color="teal" @click="createCampaign">Create Campaign</v-btn> -->
-          </v-card-actions>
-        </v-card>
-      </v-col>
+      <MyNewCampaign
+        :amount.sync="amount"
+        :button-callback="createCampaign"
+      ></MyNewCampaign>
 
       <MyContracts
         title="Deployed Campaigns"
@@ -68,12 +61,14 @@ export default {
   data() {
     return {
       message: '',
+      amount: 0,
     }
   },
 
   computed: {
     ...mapState({
       ownAddress: (state) => state.eth.ownAddress,
+      address: (state) => state.campaign.address,
       contract: (state) => state.campaign.contract,
       campaigns: (state) => state.campaign.campaigns,
     }),
@@ -82,11 +77,37 @@ export default {
   methods: {
     ...mapMutations({
       setDeployedContract: 'campaign/setDeployedContract',
-      //       setDeployedCampaigns: 'campaign/setDeployedCampaigns',
     }),
     ...mapActions({
       setDeployedCampaigns: 'campaign/setDeployedCampaigns',
+      createCampaign: 'campaign/createCampaign',
     }),
+
+    async createCampaign() {
+      console.info(this.amount)
+      const newCampaign = await this.contract.methods
+        .createCampaign(this.amount)
+        .send({
+          to: this.address,
+          from: this.ownAddress,
+        })
+      this.state.campaigns.push(0, newCampaign)
+      this.store.commit('setCampaigns', this.state.campaigns)
+    },
+
+    async createNewCampaign() {
+      this.pickWinnerMessage =
+        'Picking Winner... Waiting on transaction success.. '
+      await this.contract.methods.pickWinner().send({
+        from: this.ownAddress,
+      })
+      // TODO get winner
+      // const winner = await this.contract.methods.lastWinner().call()
+      // this.lastWinner = winner
+      this.pickWinnerMessage = 'You have picked a lottery winner!'
+      this.getPlayers()
+      this.getBalance()
+    },
   },
 }
 </script>

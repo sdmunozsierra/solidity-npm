@@ -29,7 +29,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async setDeployedCampaigns({ state, commit }, _context) {
+  async setDeployedCampaigns({ commit, state }, _context) {
     const campaigns = await state.contract.methods.getDeployedCampaigns().call()
     commit('setCampaigns', campaigns)
   },
