@@ -12,7 +12,7 @@
         </v-card>
       </v-col>
 
-      <!-- Deployed campaigns -->
+      <!-- Deployed Campaigns -->
       <v-col cols="6">
         <v-card min-height="150" class="mx-auto">
           <v-card-text>
@@ -23,6 +23,19 @@
             <v-btn color="teal" @click="setDeployedCampaigns"
               >Get Campaigns</v-btn
             >
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <!-- New Campaign -->
+      <v-col cols="6">
+        <v-card min-height="150" class="mx-auto">
+          <v-card-text>
+            <p class="text-h4">Create New Campaign</p>
+            <MyNewCampaign class="px-6"></MyNewCampaign>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <!-- <v-btn color="teal" @click="createCampaign">Create Campaign</v-btn> -->
           </v-card-actions>
         </v-card>
       </v-col>
@@ -50,7 +63,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -69,6 +82,9 @@ export default {
   methods: {
     ...mapMutations({
       setDeployedContract: 'campaign/setDeployedContract',
+      //       setDeployedCampaigns: 'campaign/setDeployedCampaigns',
+    }),
+    ...mapActions({
       setDeployedCampaigns: 'campaign/setDeployedCampaigns',
     }),
   },
