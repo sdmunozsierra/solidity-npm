@@ -17,10 +17,31 @@
           <v-card-text>
             <p class="text-h4">Deployed Campaigns</p>
             <p>{{ campaigns }}</p>
+            <v-list-item v-for="c in campaigns" :key="c">
+              <v-list-content>
+                {{ c }}
+              </v-list-content>
+            </v-list-item>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn color="teal" @click="setDeployedCampaigns"
               >Get Campaigns</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <v-col cols="6">
+        <MyContracts title="Deployed Campaigns"></MyContracts>
+
+        <v-card min-height="150" class="mx-auto">
+          <v-card-text>
+            <p class="text-h4">Contract</p>
+            <p>{{ contract }}</p>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn color="teal" @click="setDeployedContract"
+              >Deploy Contract</v-btn
             >
           </v-card-actions>
         </v-card>
