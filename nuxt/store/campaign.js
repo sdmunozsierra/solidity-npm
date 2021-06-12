@@ -26,12 +26,26 @@ export const mutations = {
   setDeployedContract(state) {
     state.contract = this.$ethereumService.getFactoryContract(state.address)
   },
+  contribute(state, from, amount) {
+    return state.contract.methods
+      .createCampaign(amount)
+      .send({ from, gas: '1000000' })
+  },
 }
 
 export const actions = {
   async setDeployedCampaigns({ commit, state }, _context) {
     const campaigns = await state.contract.methods.getDeployedCampaigns().call()
     commit('setCampaigns', campaigns)
+  },
+
+  async createCampaign({ commit, state }, from) {
+    const campaign = await state.contract.methods
+      .createCampaign(state.amount)
+      .send({ from })
+    console.log(campaign)
+    // state.campaigns.push(campaign)
+    // commit('setCampaigns', state.campaigns)
   },
 
   nuxtServerInit() {},

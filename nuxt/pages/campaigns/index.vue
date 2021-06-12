@@ -68,7 +68,6 @@ export default {
   computed: {
     ...mapState({
       ownAddress: (state) => state.eth.ownAddress,
-      address: (state) => state.campaign.address,
       contract: (state) => state.campaign.contract,
       campaigns: (state) => state.campaign.campaigns,
     }),
@@ -77,6 +76,7 @@ export default {
   methods: {
     ...mapMutations({
       setDeployedContract: 'campaign/setDeployedContract',
+      //       contribute: 'campaign/contribute',
     }),
     ...mapActions({
       setDeployedCampaigns: 'campaign/setDeployedCampaigns',
@@ -84,29 +84,14 @@ export default {
     }),
 
     async createCampaign() {
-      console.info(this.amount)
-      const newCampaign = await this.contract.methods
+      this.message = 'Creating a new campaign takes about 30 secs. Be patient.'
+      await this.contract.methods
         .createCampaign(this.amount)
-        .send({
-          to: this.address,
-          from: this.ownAddress,
-        })
-      this.state.campaigns.push(0, newCampaign)
-      this.store.commit('setCampaigns', this.state.campaigns)
-    },
-
-    async createNewCampaign() {
-      this.pickWinnerMessage =
-        'Picking Winner... Waiting on transaction success.. '
-      await this.contract.methods.pickWinner().send({
-        from: this.ownAddress,
-      })
-      // TODO get winner
-      // const winner = await this.contract.methods.lastWinner().call()
-      // this.lastWinner = winner
-      this.pickWinnerMessage = 'You have picked a lottery winner!'
-      this.getPlayers()
-      this.getBalance()
+        .send({ from: this.ownAddress, gas: 1000000 })
+      this.message = 'Campaign created'
+      console.info('new campaign created')
+      this.setDeployedCampaigns()
+      console.log(this.campaigns)
     },
   },
 }

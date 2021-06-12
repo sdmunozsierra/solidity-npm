@@ -31,12 +31,12 @@ export default {
   props: {
     title: { type: String, default: 'Form Title' },
     label: { type: String, default: 'Amount' },
-    minimumContribution: { type: Number, default: 0.1 },
+    minimumContribution: { type: Number, default: 100 },
     buttonText: { type: String, default: 'Button Text' },
     buttonCallback: { type: Function, required: true },
   },
   data: () => ({
-    currency: 'Ethereum',
+    currency: 'wei',
     valid: false,
     amount: '',
     nameRules: [
@@ -46,7 +46,7 @@ export default {
     numberRules: [
       (v) => !!v || 'Contribution is required',
       (v) => !isNaN(v) || 'Contribution must be a number',
-      (v) => v > 0.01 || 'Minimum Contribution must be ' + '0.01',
+      (v) => v > 99 || 'Minimum Contribution must be 100',
     ],
     email: '',
     emailRules: [
