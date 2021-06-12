@@ -78,4 +78,42 @@ describe('Campaigns', () => {
 
     assert.equal('Buy batteries', request.description)
   })
+
+  // End to end test
+  it('processes requests', async () => {
+    // Contribute to campaign
+    await campaign.methods.contribute().send({
+      from: accounts[0],
+      value: web3.utils.toWei('10', 'ether'),
+    })
+
+    // Send money to the request
+    await campaign.methods
+      .createRequest('description', web3.utils.toWei('5', 'ether'), accounts[1])
+      .send({
+        from: accounts[0],
+        gas: '1000000',
+      })
+
+    // Vote
+    await campaign.methods.approveRequest(0).send({
+      from: accounts[0],
+      gas: '1000000',
+    })
+
+    // Finalize
+    await campaign.methods.finalizeRequest(0).send({
+      from: accounts[0],
+      gas: '1000000',
+    })
+
+    // Retreive the balance
+    let balance = await web3.eth.getBalance(accounts[1])
+    balance = web3.utils.fromWei(balance, 'ether')
+    balance = parseFloat(balance)
+
+    // What happens to ganache between each test?
+    // The ganache money does not get resseted between tests
+    assert(balance > 104)
+  })
 })
