@@ -86,6 +86,11 @@ export default {
           title: 'Lottery',
           to: '/lottery',
         },
+        {
+          icon: 'mdi-fire',
+          title: 'Campaigns',
+          to: '/campaigns',
+        },
       ],
       miniVariant: false,
       right: true,
