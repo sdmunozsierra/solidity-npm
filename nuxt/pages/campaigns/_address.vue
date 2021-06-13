@@ -50,9 +50,19 @@ export default {
         this.address // route address
       )
       const summary = await cc.methods.getSummary().call()
-      this.setSummary(summary)
-      this.summary = summary
+      this.summary = this.summaryDAO(summary)
+      this.setSummary(this.summary)
       console.log(this.summary)
+    },
+
+    summaryDAO(summary) {
+      return {
+        minimumBalance: summary[0],
+        balance: summary[1],
+        requestsCount: summary[2],
+        approversCount: summary[3],
+        manager: summary[4],
+      }
     },
   },
 }
