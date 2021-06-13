@@ -26,11 +26,6 @@ export const mutations = {
   setDeployedContract(state) {
     state.contract = this.$ethereumService.getFactoryContract(state.address)
   },
-  contribute(state, from, amount) {
-    return state.contract.methods
-      .createCampaign(amount)
-      .send({ from, gas: '1000000' })
-  },
 }
 
 export const actions = {
@@ -39,9 +34,9 @@ export const actions = {
     commit('setCampaigns', campaigns)
   },
 
-  async createCampaign({ commit, state }, from) {
+  async createCampaign({ commit, state }, from, amount) {
     const campaign = await state.contract.methods
-      .createCampaign(state.amount)
+      .createCampaign(amount)
       .send({ from })
     console.log(campaign)
   },

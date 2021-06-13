@@ -37,8 +37,16 @@
           button-text="Create"
           :button-callback="createCampaign"
           :amount.sync="amount"
-        >
-        </MyNewCampaign>
+        />
+
+        <div v-if="loading">
+          <template>
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </template>
+        </div>
 
         <div v-if="error">
           <v-alert
@@ -80,6 +88,7 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
   data() {
     return {
+      loading: false,
       message: '',
       error: '',
       amount: 0,
@@ -99,23 +108,31 @@ export default {
       setDeployedContract: 'campaign/setDeployedContract',
     }),
     ...mapActions({
+      getOwnAddress: 'eth/getOwnAddress',
       setDeployedCampaigns: 'campaign/setDeployedCampaigns',
-      createCampaign: 'campaign/createCampaign',
     }),
 
     async createCampaign() {
+      this.loading = true
       this.message = 'Creating a new campaign takes about 30 secs. Be patient.'
       try {
+        this.getOwnAddress()
+        console.info(this.amount)
+        console.info(this.ownAddress)
+        // Creating campaign
         await this.contract.methods
           .createCampaign(this.amount)
-          .send({ from: this.ownAddress, gas: 1000000 })
+          .send({ from: this.ownAddress, gas: 10000000 })
       } catch (err) {
         this.error = err
+        this.loading = false
+        return
       }
       this.message = 'Campaign created'
       console.info('new campaign created')
       this.setDeployedCampaigns()
       console.log(this.campaigns)
+      this.loading = false
     },
   },
 }

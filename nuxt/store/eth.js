@@ -17,6 +17,11 @@ export const mutations = {
 }
 
 export const actions = {
+  async getOwnAddress({ commit }) {
+    const address = await this.$ethereumService.getCurrentAccountAsync()
+    commit('setOwnAddress', address)
+  },
+
   nuxtServerInit() {},
 
   async nuxtClientInit({ commit }, _context) {
