@@ -7,9 +7,10 @@
           <p>
             {{ error }}
           </p>
+          <P>{{ factoryAddress }}</P>
           <P>{{ summary }}</P>
           <v-card-actions>
-            <v-btn color="info" @click="getSumary">Get Summary</v-btn>
+            <v-btn color="info" @click="getSummary">Get Summary</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -18,35 +19,40 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
   data() {
     return {
       error: '',
       address: this.$route.params.address,
+      summary: '',
     }
   },
 
   computed: {
     ...mapState({
+      ownAddress: (state) => state.eth.ownAddress,
+      factoryAddress: (state) => state.campaign.address,
       campaignContract: (state) => state.campaign.campaignContract,
     }),
   },
 
   methods: {
-    ...mapGetters({
-      summary: 'campaign/summary',
-    }),
     ...mapMutations({
-      setDeployedContract: 'campaign/setDeployedContract',
-    }),
-    ...mapActions({
       getOwnAddress: 'eth/getOwnAddress',
+      setDeployedCampaignContract: 'campaign/setDeployedCampaignContract',
+      setSummary: 'campaign/setSummary',
     }),
-
+    ...mapActions({}),
+    // methods
     async getSummary() {
-      const summary = await this.campaignContract.methods.getSummary().call()
-      return summary
+      const cc = await this.$ethereumService.getCampaignContract(
+        this.address // route address
+      )
+      const summary = await cc.methods.getSummary().call()
+      this.setSummary(summary)
+      this.summary = summary
+      console.log(this.summary)
     },
   },
 }

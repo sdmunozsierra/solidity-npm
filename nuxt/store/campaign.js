@@ -34,14 +34,16 @@ export const mutations = {
   setDeployedContract(state) {
     state.contract = this.$ethereumService.getFactoryContract(state.address)
   },
-  setCampaignContract(state) {
-    state.campaignContract = this.$ethereumService.getCampaignContract(
-      state.address
-    )
+  setCampaignContract(state, campaignContract) {
+    state.campaignContract = campaignContract
   },
-  // Get summary
-  async setSummary(state) {
-    state.summary = await state.campaignContract.methods.getSummary().call()
+  setDeployedCampaignContract(state, address) {
+    console.log('deploying campaign contract to address: ', address)
+    state.campaignContract = this.$ethereumService.getCampaignContract(address)
+    console.log(state.campaignContract)
+  },
+  setSummary(state, summary) {
+    state.summary = summary
   },
 }
 
@@ -56,6 +58,13 @@ export const actions = {
       .createCampaign(amount)
       .send({ from })
     console.log(campaign)
+  },
+
+  // Get summary
+  async setSummary({ commit, state }) {
+    const summary = await state.campaignContract.methods.getSummary().call()
+    console.log(summary)
+    commit('setSummary', summary)
   },
 
   // Do not touch
