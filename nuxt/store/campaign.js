@@ -1,5 +1,5 @@
 export const state = () => ({
-  address: '0xCfA437255f32F79Fe73E398422EeC91F5fadDA1E',
+  address: '0x894624C94bf58e82038BdF38d22b0eF6cfd632Db',
   contract: null,
   campaigns: [],
 })

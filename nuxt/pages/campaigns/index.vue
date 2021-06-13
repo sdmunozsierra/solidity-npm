@@ -2,33 +2,15 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-        <v-card min-height="150" class="mx-auto">
-          <v-card-text>
-            <p class="text-h4">Ethereum Campaign</p>
-            <div v-if="contract != null">
-              <p>Found Contract!</p>
-            </div>
-          </v-card-text>
-        </v-card>
+        <h1>Ethereum Kickstarter Campaigns</h1>
       </v-col>
-
-      <!-- Deployed Campaigns -->
-      <v-col cols="6">
-        <v-card min-height="150" class="mx-auto">
-          <v-card-text>
-            <p class="text-h4">Deployed Campaigns</p>
-            <p>{{ campaigns }}</p>
-          </v-card-text>
-          <v-card-actions class="justify-center">
-            <v-btn color="teal" @click="setDeployedCampaigns"
-              >Get Campaigns</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-col>
+      <MyContracts
+        title="Deployed Campaigns"
+        :address="campaigns"
+      ></MyContracts>
 
       <!-- New Campaign -->
-      <v-col cols="6" no-gutters class="pa-0 ma-0">
+      <v-col class="pa-0 ma-0">
         <MyNewCampaign
           title="Create a new Campaign"
           label="Contribution Ammount"
@@ -39,16 +21,6 @@
           :loading="loading"
           :amount.sync="amount"
         />
-
-        <div v-if="loading">
-          <template>
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </template>
-        </div>
-
         <div v-if="error">
           <v-alert
             dismissible
@@ -62,12 +34,21 @@
         </div>
       </v-col>
 
-      <MyContracts
-        title="Deployed Campaigns"
-        :address="campaigns"
-      ></MyContracts>
-
-      <v-col cols="6">
+      <v-col>
+        <!-- Deployed Campaigns -->
+        <v-card min-height="150" class="mx-auto">
+          <v-card-text>
+            <p class="text-h4">Deployed Campaigns</p>
+            <p>{{ campaigns }}</p>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn color="teal" @click="setDeployedCampaigns"
+              >Get Campaigns</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col>
         <v-card min-height="150" class="mx-auto">
           <v-card-text>
             <p class="text-h4">Deploy Factory Contract</p>
