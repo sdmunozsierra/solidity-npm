@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 import Web3 from 'web3'
 import Notify from 'bnc-notify'
 import ERC721Abi from '~/assets/data/ethereum/ERC721Abi.json'
 import lotteryAbi from '~/assets/data/ethereum/lotteryAbi.json'
 import CampaignFactory from '~/assets/data/ethereum/CampaignFactory.json'
+import Campaign from '~/assets/data/ethereum/Campaign.json'
 import { BLOCKNATIVE } from '~/assets/data/non_secret_keys.js'
 
 export default class EthereumService {
@@ -15,6 +17,7 @@ export default class EthereumService {
     this.getWeb3()
   }
 
+  /** start Web3 */
   getWeb3() {
     if (this.provider === null) {
       this.web3 = new Web3()
@@ -31,6 +34,7 @@ export default class EthereumService {
     this.web3 = new Web3(this.provider)
   }
 
+  /** Getters */
   get utils() {
     return this.web3.utils
   }
@@ -55,6 +59,7 @@ export default class EthereumService {
     return !!account
   }
 
+  /** Start Metamask */
   async init() {
     if (!this.hasWallet) {
       // todo: Supports wallet like Fortmatic
@@ -106,13 +111,15 @@ export default class EthereumService {
     this.options.dev && console.info('[web3] Unlocked.')
   }
 
+  /** Unlock Wallet Nuxt Client Init */
   async unlockWallet() {
     await this.provider.enable()
     await this.init()
-    this.store.dispatch('eth/nuxtClientInit') // find a cleaner way to seperate client init and wallet init
-    // this.store.dispatch('nuxtClientInit') // find a cleaner way to seperate client init and wallet init
+    // find a cleaner way to seperate client init and wallet init
+    this.store.dispatch('eth/nuxtClientInit')
   }
 
+  /** Get Sync Information  */
   async getCurrentAccountAsync() {
     try {
       const accounts = await this.web3.eth.getAccounts()
@@ -130,16 +137,10 @@ export default class EthereumService {
     return sig
   }
 
-  getNetworkIdAsync() {
-    return this.web3.eth.net.getId()
-  }
+  /** Contract Getters */
 
   getLotteryContract(address) {
     return new this.web3.eth.Contract(lotteryAbi, address)
-  }
-
-  getERC721Contract(address) {
-    return new this.web3.eth.Contract(ERC721Abi, address)
   }
 
   getFactoryContract(address) {
@@ -149,12 +150,28 @@ export default class EthereumService {
     )
   }
 
+  getCampaignContract(address) {
+    // Investigate how to access the store from here
+    return new this.web3.eth.Contract(JSON.parse(Campaign.interface), address)
+  }
+
+  getERC721Contract(address) {
+    return new this.web3.eth.Contract(ERC721Abi, address)
+  }
+
+  /** Gas Functions */
+
   async getGasPriceInGwei() {
     let gasPriceInGwei = await this.web3.eth.getGasPrice()
     if (gasPriceInGwei < this.web3.utils.toWei('5', 'gwei')) {
       gasPriceInGwei = this.web3.utils.toWei('5', 'gwei')
     }
     return gasPriceInGwei
+  }
+
+  /** Network Getters */
+  getNetworkIdAsync() {
+    return this.web3.eth.net.getId()
   }
 
   getNetworkSlug(netId) {
@@ -171,28 +188,6 @@ export default class EthereumService {
         return ''
     }
   }
-
-  // async enterLottery(
-  //   contractAddress,
-  //   from,
-  //   value,
-  //   callbackAfterSend = () => {}
-  // ){
-  //   const contract = await this.getLotteryContract(contractAddress)
-  //   return contract.methods
-  //     .enter()
-  //     .send({
-  //        from,
-  //        value: this.web3.utils.toWei(value, 'ether')
-  //       })
-  //     .on('transactionHash', function (hash) {
-  //       notify.hash(hash)
-  //       callbackAfterSend()
-  //     })
-  //     .on('receipt', function (receipt) {
-  //       console.info(receipt)
-  //     })
-  // },
 
   // most standard ERC721 method implemented:
   async sendAsset(

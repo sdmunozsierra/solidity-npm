@@ -1,29 +1,10 @@
-<template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-card>
-          <v-card-title> {{ address }}</v-card-title>
-          <p>
-            {{ error }}
-          </p>
-          <P>{{ summary }}</P>
-          <v-card-actions>
-            <v-btn color="info" @click="getSumary">Get Summary</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
-
 <script>
+// Sample of a mapstate mapgetters, mutations and actions
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
   data() {
     return {
       error: '',
-      address: this.$route.params.address,
     }
   },
 
@@ -51,5 +32,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

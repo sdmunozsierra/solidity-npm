@@ -1,7 +1,9 @@
 export const state = () => ({
-  address: '0x894624C94bf58e82038BdF38d22b0eF6cfd632Db',
-  contract: null,
+  address: '0x894624C94bf58e82038BdF38d22b0eF6cfd632Db', // factory contract deploy address
+  contract: null, // factory contract
+  campaignContract: null, // campaign contract
   campaigns: [],
+  sumary: null,
 })
 
 export const getters = {
@@ -14,6 +16,12 @@ export const getters = {
   campaigns(state) {
     return state.campaigns
   },
+  campaignContract(state) {
+    return state.campaignContract
+  },
+  summary(state) {
+    return state.summary
+  },
 }
 
 export const mutations = {
@@ -25,6 +33,15 @@ export const mutations = {
   },
   setDeployedContract(state) {
     state.contract = this.$ethereumService.getFactoryContract(state.address)
+  },
+  setCampaignContract(state) {
+    state.campaignContract = this.$ethereumService.getCampaignContract(
+      state.address
+    )
+  },
+  // Get summary
+  async setSummary(state) {
+    state.summary = await state.campaignContract.methods.getSummary().call()
   },
 }
 
@@ -41,6 +58,7 @@ export const actions = {
     console.log(campaign)
   },
 
+  // Do not touch
   nuxtServerInit() {},
   async nuxtClientInit({ commit }, _context) {
     if (

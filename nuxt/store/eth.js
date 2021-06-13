@@ -1,6 +1,6 @@
 export const state = () => ({
   ownAddress: [],
-  // ownProfile: {},
+  ownProfile: {},
   networkId: 1,
 })
 
@@ -8,9 +8,9 @@ export const mutations = {
   setOwnAddress(state, address) {
     state.ownAddress = address
   },
-  // setOwnProfile(state, profile) {
-  //   state.ownProfile = profile
-  // },
+  setOwnProfile(state, profile) {
+    state.ownProfile = profile
+  },
   setNetworkId(state, networkId) {
     state.networkId = networkId
   },

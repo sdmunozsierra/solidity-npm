@@ -9,7 +9,9 @@
     <v-list-item-content>
       <!-- Title -->
       <v-list-item-title>
-        {{ title }}
+        <NuxtLink :to="'/campaigns/' + subtitle">
+          {{ title }}
+        </NuxtLink>
       </v-list-item-title>
       <!-- Subtitle -->
       <v-list-item-subtitle class="text--primary">
