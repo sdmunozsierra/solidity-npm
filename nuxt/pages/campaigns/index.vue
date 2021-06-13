@@ -36,6 +36,7 @@
           :minimum-contribution="100"
           button-text="Create"
           :button-callback="createCampaign"
+          :loading="loading"
           :amount.sync="amount"
         />
 
@@ -123,6 +124,7 @@ export default {
         await this.contract.methods
           .createCampaign(this.amount)
           .send({ from: this.ownAddress, gas: 10000000 })
+        this.loading = false
       } catch (err) {
         this.error = err
         this.loading = false
@@ -132,7 +134,6 @@ export default {
       console.info('new campaign created')
       this.setDeployedCampaigns()
       console.log(this.campaigns)
-      this.loading = false
     },
   },
 }

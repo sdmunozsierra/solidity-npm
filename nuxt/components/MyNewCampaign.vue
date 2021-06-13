@@ -35,6 +35,7 @@ export default {
     currency: { type: String, default: 'wei' },
     minimumContribution: { type: Number, default: 100 },
     buttonText: { type: String, default: 'Button Text' },
+    loading: { type: Boolean, default: false },
     buttonCallback: { type: Function, required: true },
   },
   data: () => ({
@@ -58,7 +59,7 @@ export default {
 
   computed: {
     formIsValid() {
-      return this.valid
+      return this.valid && !this.loading
     },
   },
 
