@@ -47,3 +47,9 @@ Use the command `npx` included with `npm`:
 ```shell
 $ npx nuxt-create-app
 ```
+
+### Inspiration
+
+Ethereum KickStart web site created with Vue
+
+Follow the course on https://www.udemy.com/ethereum-and-solidity-the-complete-developers-guide/
