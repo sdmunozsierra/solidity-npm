@@ -57,12 +57,20 @@
                 <td>{{ item.recipient }}</td>
                 <td>{{ item.approvalCount }} / {{ approvers }}</td>
                 <td>
-                  <v-btn color="success" @click="onApprove(index)"
+                  <v-btn
+                    color="success"
+                    :disabled="item.complete"
+                    @click="onApprove(index)"
                     >Approve</v-btn
                   >
                 </td>
                 <td>
-                  <v-btn color="teal" @click="onFinalize(index)"
+                  <v-btn
+                    color="teal"
+                    :disabled="
+                      !(item.approvalCount > approvers / 2) ^ item.complete
+                    "
+                    @click="onFinalize(index)"
                     >Finalize</v-btn
                   >
                 </td>
