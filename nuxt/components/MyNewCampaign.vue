@@ -6,7 +6,42 @@
         <v-col cols="12">
           <v-card class="mx-auto">
             <v-card-text>
+              <!-- Form Title-->
               <p class="text-h4">{{ title }}</p>
+
+              <!-- Messages -->
+              <!-- Success -->
+              <v-row>
+                <v-col cols="12" align="center" justify="center">
+                  <div v-if="successMessage">
+                    <v-alert
+                      dismissible
+                      border="right"
+                      colored-border
+                      type="success"
+                      elevation="2"
+                    >
+                      {{ successMessage }}
+                    </v-alert>
+                  </div>
+                </v-col>
+                <!-- Error -->
+                <v-col>
+                  <div v-if="errorMessage">
+                    <v-alert
+                      dismissible
+                      border="right"
+                      colored-border
+                      type="error"
+                      elevation="2"
+                    >
+                      {{ errorMessage }}
+                    </v-alert>
+                  </div>
+                </v-col>
+              </v-row>
+
+              <!-- Form label currency-->
               <v-text-field
                 v-model="amount"
                 :rules="numberRules"
@@ -15,8 +50,10 @@
                 :suffix="currency"
               ></v-text-field>
             </v-card-text>
+
             <v-card-actions>
               <v-row>
+                <!-- Submit Button -->
                 <v-col cols="12" align="center" justify="center">
                   <v-btn
                     :disabled="!formIsValid"
@@ -26,11 +63,9 @@
                   >
                 </v-col>
 
+                <!-- Loading Ticker -->
                 <v-col cols="12" align="center" justify="center">
                   <div v-if="valid && loading">
-                    <p>{{ valid }}</p>
-                    <p>{{ loading }}</p>
-                    <p>{{ valid && loading }}</p>
                     <v-progress-circular
                       indeterminate
                       color="primary"

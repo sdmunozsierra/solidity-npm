@@ -27,6 +27,8 @@
           :loading="loading"
           :button-callback="contribute"
           :amount.sync="amount"
+          :success-message="transactionMessage"
+          :error-message="error"
         ></MyNewCampaign>
       </v-col>
 
@@ -94,21 +96,17 @@ export default {
       // Contribute
       try {
         this.loading = true
-        this.transactionMessage = 'Contributting to campaign'
         this.getOwnAddress()
-        console.info(this.amount)
         const contribution = await cc.methods.contribute().send({
           from: this.ownAddress,
           value: this.amount,
         })
-        console.log(contribution)
-        this.transactionMessage = 'Contribution Success'
-        this.loading = false
+        console.info(contribution)
+        this.transactionMessage = 'Contribution success!'
       } catch (err) {
         this.error = err
-        this.transactionMessage = 'Contribution error'
-        this.loading = false
       }
+      this.loading = false
     },
 
     summaryDAO(summary) {
