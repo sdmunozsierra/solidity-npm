@@ -12,7 +12,7 @@
                 :rules="numberRules"
                 :label="label"
                 required
-                suffix="wei"
+                :suffix="currency"
               ></v-text-field>
             </v-card-text>
             <v-card-actions class="justify-center">
@@ -40,7 +40,7 @@ export default {
   },
   data: () => ({
     valid: false,
-    amount: '',
+    amount: 0,
     nameRules: [
       (v) => !!v || 'Name is required',
       (v) => v.length <= 10 || 'Name must be less than 10 characters',

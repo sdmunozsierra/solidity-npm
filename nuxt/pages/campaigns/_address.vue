@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="6">
         <v-card>
           <v-card-title> {{ address }}</v-card-title>
           <p>
@@ -14,6 +14,18 @@
           </v-card-actions>
         </v-card>
       </v-col>
+
+      <v-col cols="6">
+        <MyNewCampaign
+          title="Contribute to Campaign"
+          :minimum-contribution="summary.minimumContribution"
+          currency="wei"
+          button-text="Contribute"
+          :button-callback="contribute"
+          :amount.sync="amount"
+        ></MyNewCampaign>
+      </v-col>
+
       <v-col v-for="item in items" :key="item.meta">
         <MySimpleCard
           :header="item.header"
@@ -35,6 +47,7 @@ export default {
       address: this.$route.params.address,
       summary: '',
       items: [],
+      amount: 0,
     }
   },
 
@@ -48,11 +61,13 @@ export default {
 
   methods: {
     ...mapMutations({
-      getOwnAddress: 'eth/getOwnAddress',
       setDeployedCampaignContract: 'campaign/setDeployedCampaignContract',
       setSummary: 'campaign/setSummary',
     }),
-    ...mapActions({}),
+    ...mapActions({
+      getOwnAddress: 'eth/getOwnAddress',
+    }),
+
     // methods
     async getSummary() {
       const cc = await this.$ethereumService.getCampaignContract(
@@ -63,6 +78,30 @@ export default {
       this.setSummary(this.items)
       console.log(this.summary)
     },
+
+    async contribute() {
+      // Get contract // TODO use store
+      const cc = await this.$ethereumService.getCampaignContract(
+        this.address // route address
+      )
+      // Contribute
+      try {
+        this.getOwnAddress()
+        console.info(this.amount)
+        const contribution = await cc.methods.contribute().send({
+          from: this.ownAddress,
+          value: this.amount,
+        })
+        console.log(contribution)
+      } catch (err) {
+        this.error = err
+      }
+    },
+
+    // Contribute
+
+    // button callback
+    btnCallback() {},
 
     summaryDAO(summary) {
       return {
