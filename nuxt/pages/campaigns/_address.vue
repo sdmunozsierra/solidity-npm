@@ -7,6 +7,9 @@
           <p>
             {{ error }}
           </p>
+          <p>
+            {{ transactionMessage }}
+          </p>
           <P>{{ factoryAddress }}</P>
           <P>{{ summary }}</P>
           <v-card-actions>
@@ -21,6 +24,7 @@
           :minimum-contribution="summary.minimumContribution"
           currency="wei"
           button-text="Contribute"
+          :loading="loading"
           :button-callback="contribute"
           :amount.sync="amount"
         ></MyNewCampaign>
@@ -44,10 +48,12 @@ export default {
   data() {
     return {
       error: '',
+      transactionMessage: '',
       address: this.$route.params.address,
       summary: '',
       items: [],
       amount: 0,
+      loading: false,
     }
   },
 
@@ -79,6 +85,7 @@ export default {
       console.log(this.summary)
     },
 
+    // Contribute
     async contribute() {
       // Get contract // TODO use store
       const cc = await this.$ethereumService.getCampaignContract(
@@ -86,6 +93,8 @@ export default {
       )
       // Contribute
       try {
+        this.loading = true
+        this.transactionMessage = 'Contributting to campaign'
         this.getOwnAddress()
         console.info(this.amount)
         const contribution = await cc.methods.contribute().send({
@@ -93,15 +102,14 @@ export default {
           value: this.amount,
         })
         console.log(contribution)
+        this.transactionMessage = 'Contribution Success'
+        this.loading = false
       } catch (err) {
         this.error = err
+        this.transactionMessage = 'Contribution error'
+        this.loading = false
       }
     },
-
-    // Contribute
-
-    // button callback
-    btnCallback() {},
 
     summaryDAO(summary) {
       return {

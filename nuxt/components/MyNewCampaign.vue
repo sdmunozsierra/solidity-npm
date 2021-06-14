@@ -15,10 +15,29 @@
                 :suffix="currency"
               ></v-text-field>
             </v-card-text>
-            <v-card-actions class="justify-center">
-              <v-btn :disabled="!formIsValid" color="primary" @click="submit">{{
-                buttonText
-              }}</v-btn>
+            <v-card-actions>
+              <v-row>
+                <v-col cols="12" align="center" justify="center">
+                  <v-btn
+                    :disabled="!formIsValid"
+                    color="primary"
+                    @click="submit"
+                    >{{ buttonText }}</v-btn
+                  >
+                </v-col>
+
+                <v-col cols="12" align="center" justify="center">
+                  <div v-if="valid && loading">
+                    <p>{{ valid }}</p>
+                    <p>{{ loading }}</p>
+                    <p>{{ valid && loading }}</p>
+                    <v-progress-circular
+                      indeterminate
+                      color="primary"
+                    ></v-progress-circular>
+                  </div>
+                </v-col>
+              </v-row>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -37,6 +56,8 @@ export default {
     buttonText: { type: String, default: 'Button Text' },
     loading: { type: Boolean, default: false },
     buttonCallback: { type: Function, required: true },
+    errorMessage: { type: String, default: '' },
+    successMessage: { type: String, default: '' },
   },
   data: () => ({
     valid: false,
