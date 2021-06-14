@@ -14,6 +14,14 @@
           </v-card-actions>
         </v-card>
       </v-col>
+      <v-col v-for="item in items" :key="item.meta">
+        <MySimpleCard
+          :header="item.header"
+          :meta="item.meta"
+          :description="item.description"
+        >
+        </MySimpleCard>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -26,6 +34,7 @@ export default {
       error: '',
       address: this.$route.params.address,
       summary: '',
+      items: [],
     }
   },
 
@@ -50,19 +59,57 @@ export default {
         this.address // route address
       )
       const summary = await cc.methods.getSummary().call()
-      this.summary = this.summaryDAO(summary)
-      this.setSummary(this.summary)
+      this.setItems(summary)
+      this.setSummary(this.items)
       console.log(this.summary)
     },
 
     summaryDAO(summary) {
       return {
-        minimumBalance: summary[0],
+        minimumContribution: summary[0],
         balance: summary[1],
         requestsCount: summary[2],
         approversCount: summary[3],
         manager: summary[4],
       }
+    },
+
+    setItems(summary) {
+      const dao = this.summaryDAO(summary)
+      const items = [
+        {
+          header: dao.manager,
+          meta: 'Address of Manager',
+          description:
+            'The manager created this campaign and can create requests to withdraw money',
+        },
+        {
+          header: dao.minimumContribution,
+          meta: 'Minimum Contribution (wei)',
+          description:
+            'You must contribute at least this much wei to become an approver',
+        },
+        {
+          header: dao.requestsCount,
+          meta: 'Number of Requests',
+          description:
+            'A request tries to withdraw money from the contract. Requests must be approved by approvers',
+        },
+        {
+          header: dao.approversCount,
+          meta: 'Number of Approvers',
+          description:
+            'Number of people who have already donated to this campaign',
+        },
+        {
+          header: this.$ethereumService.utils.fromWei(dao.balance, 'ether'),
+          meta: 'Campaign Balance (ether)',
+          description:
+            'The balance is how much money this campaign has left to spend.',
+        },
+      ]
+      this.items = items
+      return items
     },
   },
 }
