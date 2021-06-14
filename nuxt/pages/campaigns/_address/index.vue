@@ -1,26 +1,40 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="8">
         <v-card>
-          <v-card-title> {{ address }}</v-card-title>
-          <p>
-            {{ error }}
-          </p>
-          <p>
-            {{ transactionMessage }}
-          </p>
-          <P>{{ factoryAddress }}</P>
-          <P>{{ summary }}</P>
+          <v-card-text>
+            <p class="text-h4 text--primary">{{ address }}</p>
+            <p>Campaign addess</p>
+            <div class="text--primary">
+              <p>{{ error }}</p>
+              <p>{{ transactionMessage }}</p>
+            </div>
+          </v-card-text>
           <v-card-actions>
-            <v-btn color="info" @click="getSummary">Get Summary</v-btn>
+            <v-row>
+              <v-col align="center" justify="center">
+                <p>Get more information</p>
+                <v-btn color="info" @click="getSummary">Get Summary</v-btn>
+              </v-col>
+              <v-col align="center" justify="center">
+                <p>Get requests list</p>
+                <v-btn
+                  color="info"
+                  :to="address + '/requests'"
+                  @click="getRequests"
+                >
+                  View Requests</v-btn
+                >
+              </v-col>
+            </v-row>
           </v-card-actions>
         </v-card>
       </v-col>
 
-      <v-col cols="6">
+      <v-col cols="4">
         <MyNewCampaign
-          title="Contribute to Campaign"
+          title="Contribute"
           :minimum-contribution="summary.minimumContribution"
           currency="wei"
           button-text="Contribute"
@@ -62,7 +76,6 @@ export default {
   computed: {
     ...mapState({
       ownAddress: (state) => state.eth.ownAddress,
-      factoryAddress: (state) => state.campaign.address,
       campaignContract: (state) => state.campaign.campaignContract,
     }),
   },

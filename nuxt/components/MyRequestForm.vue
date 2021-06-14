@@ -28,7 +28,7 @@
                 </v-col>
                 <!-- Error -->
                 <v-col>
-                  <div v-if="errorMessage">
+                  <div v-if="error">
                     <v-alert
                       dismissible
                       border="right"
@@ -36,11 +36,18 @@
                       type="error"
                       elevation="2"
                     >
-                      {{ errorMessage }}
+                      {{ error }}
                     </v-alert>
                   </div>
                 </v-col>
               </v-row>
+
+              <!-- Description -->
+              <v-text-field
+                v-model="description"
+                label="Description of the Request"
+                required
+              ></v-text-field>
 
               <!-- Form label currency-->
               <v-text-field
@@ -49,6 +56,14 @@
                 :label="label"
                 required
                 :suffix="currency"
+              ></v-text-field>
+
+              <!-- Recipient -->
+              <v-text-field
+                v-model="recipientAddress"
+                label="Address of the Recipient"
+                :rules="addressRules"
+                required
               ></v-text-field>
             </v-card-text>
 
@@ -92,25 +107,33 @@ export default {
     buttonText: { type: String, default: 'Button Text' },
     loading: { type: Boolean, default: false },
     buttonCallback: { type: Function, required: true },
-    errorMessage: { type: String, default: '' },
+    error: { type: String, default: '' },
     successMessage: { type: String, default: '' },
   },
+
   data: () => ({
     valid: false,
+    description: '',
     amount: 0,
+    recipientAddress: '',
     nameRules: [
       (v) => !!v || 'Name is required',
       (v) => v.length <= 10 || 'Name must be less than 10 characters',
     ],
     numberRules: [
-      (v) => !!v || 'Contribution is required',
-      (v) => !isNaN(v) || 'Contribution must be a number',
-      (v) => v > 99 || 'Minimum Contribution must be 100',
+      (v) => !!v || 'Number is required',
+      (v) => !isNaN(v) || 'Input must be a number',
+      (v) => v > 99 || 'Minimum number be 100',
     ],
     email: '',
     emailRules: [
       (v) => !!v || 'E-mail is required',
       (v) => /.+@.+/.test(v) || 'E-mail must be valid',
+    ],
+    address: '',
+    addressRules: [
+      (v) => !!v || 'Address is required',
+      (v) => /0x.+/.test(v) || 'Address must start with 0x',
     ],
   }),
 
@@ -123,6 +146,8 @@ export default {
   methods: {
     submit() {
       this.$emit('update:amount', this.amount)
+      this.$emit('update:description', this.description)
+      this.$emit('update:recipientAddress', this.recipientAddress)
       this.buttonCallback()
     },
   },
