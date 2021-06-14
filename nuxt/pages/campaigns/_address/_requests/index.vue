@@ -15,7 +15,7 @@
             <p>message log: {{ transactionMessage }}</p>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="info" @click="getSummary">Get Requests</v-btn>
+            <v-btn color="info" @click="getRequests">Get Requests</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -85,15 +85,25 @@ export default {
     }),
 
     // methods
-    async getSummary() {
+    async getRequests() {
       const cc = await this.$ethereumService.getCampaignContract(
         this.address // route address
       )
-      const summary = await cc.methods.getSummary().call()
-      this.setItems(summary)
-      this.setSummary(this.items)
-      console.log(this.summary)
+      // Get total number of requests
+      const requestCount = await cc.methods.getRequestsCount().call()
+      console.log(requestCount)
+      // Here we ask for each individual element
+      const requests = await Promise.all(
+        Array(parseInt(requestCount))
+          .fill()
+          .map((element, index) => {
+            return cc.methods.requests(index).call()
+          })
+      )
+      console.log(requests)
+      return requests
     },
+
     // Create Request
     async createRequest() {
       this.loading = true
