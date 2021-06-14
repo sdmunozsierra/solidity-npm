@@ -7,12 +7,12 @@
 
       <v-col cols="6">
         <v-card>
-          <v-card-title> Requests</v-card-title>
+          <v-card-title>Requests page information</v-card-title>
           <v-card-text>
             <p>factory address: {{ factoryAddress }}</p>
             <p>campaign address: {{ address }}</p>
-            <p>error log: {{ error }}</p>
             <p>message log: {{ transactionMessage }}</p>
+            <p>error log: {{ error }}</p>
           </v-card-text>
           <v-card-actions>
             <v-btn color="info" @click="getRequests">Get Requests</v-btn>
@@ -27,13 +27,49 @@
           :amount.sync="amount"
           :recipient-address.sync="recipientAddress"
           currency="wei"
-          :minimum-contribution="summary.minimumContribution"
           button-text="Create Request"
           :button-callback="createRequest"
           :loading="loading"
           :success-message="transactionMessage"
           :error-message="error"
         />
+      </v-col>
+
+      <v-col>
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">Id</th>
+                <th class="text-left">Description</th>
+                <th class="text-left">Amount</th>
+                <th class="text-left">Recipient</th>
+                <th class="text-left">Approval Count</th>
+                <th class="text-left">Approve</th>
+                <th class="text-left">Finalize</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in requests" :key="index">
+                <td>{{ index }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.value }}</td>
+                <td>{{ item.recipient }}</td>
+                <td>{{ item.approvalCount }} / {{ approvers }}</td>
+                <td>
+                  <v-btn color="success" @click="onApprove(index)"
+                    >Approve</v-btn
+                  >
+                </td>
+                <td>
+                  <v-btn color="teal" @click="onFinalize(index)"
+                    >Finalize</v-btn
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
       </v-col>
 
       <v v-for="item in items" :key="item.meta">
@@ -56,11 +92,13 @@ export default {
       address: this.$route.params.address,
       items: [],
       loading: false,
-      summary: '', // deprecate
+      requests: [],
       // Request form Child
       description: '',
       amount: 0,
       recipientAddress: '',
+      // Approvers
+      approvers: 0,
       // Notification Strings
       error: '',
       transactionMessage: '',
@@ -78,20 +116,22 @@ export default {
   methods: {
     ...mapMutations({
       setDeployedCampaignContract: 'campaign/setDeployedCampaignContract',
-      setSummary: 'campaign/setSummary',
     }),
     ...mapActions({
       getOwnAddress: 'eth/getOwnAddress',
     }),
 
-    // methods
+    // Get Requests
     async getRequests() {
       const cc = await this.$ethereumService.getCampaignContract(
         this.address // route address
       )
       // Get total number of requests
       const requestCount = await cc.methods.getRequestsCount().call()
+      const approvers = await cc.methods.approversCount().call()
       console.log(requestCount)
+      this.approvers = approvers
+      console.log(approvers)
       // Here we ask for each individual element
       const requests = await Promise.all(
         Array(parseInt(requestCount))
@@ -100,6 +140,7 @@ export default {
             return cc.methods.requests(index).call()
           })
       )
+      this.requests = requests
       console.log(requests)
       return requests
     },
@@ -119,52 +160,49 @@ export default {
             from: this.ownAddress,
           })
         console.info(r)
+        this.transactionMessage = 'Request success!'
       } catch (err) {
         this.error = err
       }
       this.loading = false
     },
 
-    // Contribute
-    async contribute() {
-      // Get contract // TODO use store
+    // Approve
+    async onApprove(index) {
+      this.loading = true
+      this.getOwnAddress()
       const cc = await this.$ethereumService.getCampaignContract(
         this.address // route address
       )
-      // Contribute
       try {
-        this.loading = true
-        this.getOwnAddress()
-        const contribution = await cc.methods.contribute().send({
+        const r = await cc.methods.approveRequest(index).send({
           from: this.ownAddress,
-          value: this.amount,
         })
-        console.info(contribution)
-        this.transactionMessage = 'Contribution success!'
+        console.info(r)
+        this.transactionMessage = 'Aprove success!'
       } catch (err) {
         this.error = err
       }
       this.loading = false
     },
 
-    summaryDAO(summary) {
-      return {
-        manager: summary[4],
+    // Finalize
+    async onFinalize(index) {
+      this.loading = true
+      this.getOwnAddress()
+      const cc = await this.$ethereumService.getCampaignContract(
+        this.address // route address
+      )
+      try {
+        const r = await cc.methods.finalizeRequest(index).send({
+          from: this.ownAddress,
+        })
+        console.info(r)
+        this.transactionMessage = 'Finalize success!'
+      } catch (err) {
+        this.error = err
       }
-    },
-
-    setItems(summary) {
-      const dao = this.summaryDAO(summary)
-      const items = [
-        {
-          header: dao.manager,
-          meta: 'Address of Manager',
-          description:
-            'The manager created this campaign and can create requests to withdraw money',
-        },
-      ]
-      this.items = items
-      return items
+      this.loading = false
     },
   },
 }

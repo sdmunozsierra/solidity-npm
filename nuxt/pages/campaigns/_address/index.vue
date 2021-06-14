@@ -19,11 +19,7 @@
               </v-col>
               <v-col align="center" justify="center">
                 <p>Get requests list</p>
-                <v-btn
-                  color="info"
-                  :to="address + '/requests'"
-                  @click="getRequests"
-                >
+                <v-btn color="info" :to="address + '/requests'">
                   View Requests</v-btn
                 >
               </v-col>
