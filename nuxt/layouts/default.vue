@@ -91,6 +91,11 @@ export default {
           title: 'Campaigns',
           to: '/campaigns',
         },
+        {
+          icon: 'mdi-square',
+          title: 'Example',
+          to: '/example',
+        },
       ],
       miniVariant: false,
       right: true,

@@ -1,0 +1,97 @@
+<template>
+  <v-container>
+    <v-layout row>
+      <v-flex xs12 sm6 offset-sm3>
+        <h2>Create a Campaing!</h2>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12>
+        <form @submit.prevent="onCreateCampaign">
+          <v-layout row>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-text-field
+                id="minimumContribution"
+                v-model="minimumContribution"
+                name="minimumContribution"
+                label="minimum contribution"
+                suffix="wei"
+                required
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-btn
+                class="primary"
+                :disabled="!formIsValid"
+                :loading="loading"
+                type="submit"
+                >Create Campaign</v-btn
+              >
+            </v-flex>
+          </v-layout>
+        </form>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12 sm6 offset-sm3>
+        <v-alert v-model="error" type="error" dismissible>
+          {{ errorMessage }}
+        </v-alert>
+      </v-flex>
+    </v-layout>
+  </v-container>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      minimumContribution: '',
+    }
+  },
+  computed: {
+    formIsValid() {
+      return this.minimumContribution !== ''
+    },
+    errorMessage: {
+      get() {
+        return this.$store.getters.errorMessage
+      },
+      set(newValue) {
+        this.$store.commit('setErrorMessage', newValue)
+      },
+    },
+    loading() {
+      return this.$store.getters.loading
+    },
+    error: {
+      get() {
+        return this.$store.getters.error
+      },
+      set(newValue) {
+        this.$store.commit('setError', newValue)
+      },
+    },
+  },
+  mounted() {
+    this.$store.commit('setError', false)
+    this.$store.commit('setErrorMessage', '')
+  },
+  methods: {
+    async onCreateCampaign() {
+      if (!this.formIsValid) {
+        return
+      }
+      await this.$store.dispatch('createCampaign', {
+        minimumContribution: this.minimumContribution,
+      })
+      if (!this.error) {
+        this.$router.push('/')
+      }
+    },
+  },
+}
+</script>
