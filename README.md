@@ -40,6 +40,34 @@ $ npm deploy.js
 
 TODO Automatically create a .json file with the contract output.
 
+### NFT
+
+Create your nfts from scratch using `truffle`
+
+```
+mkdir NFT
+truffle unbox smarcontractkit/box
+npm i @openzeppelin/contracts
+```
+
+In `truffle-config.js`
+
+```
+api_keys: {
+	etherscan: process.env.ETHERSCAN_API_KEY
+},
+plugins: {
+	'truffle-plugin-verify'
+}
+```
+
+Migrate the contracts to the network rinkeby after adding the setting.
+
+```
+truffle migrate --reset --network rinkeby -f 3
+truffle run verify NFTSimple --network rinkeby --license MIT
+```
+
 ### Create your own Nuxt Frontend from scratch
 
 Use the command `npx` included with `npm`:
